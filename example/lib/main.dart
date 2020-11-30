@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:xhb_swiper/xhb_swiper.dart';
 
 void main() => runApp(MyApp());
 
@@ -31,12 +32,19 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text(widget.title),
       ),
-      body: Center(
-        child: Container(
-          width: 100,
-          height: 100,
-          color: Colors.red,
-        ),
+      body: Column(
+        children: [
+          Swiper(
+            [
+              "https://yy0.tv.cmvideo.cn:8443/migutv/res/2019/10/17/59L11DV8GKF0.jpg",
+              "https://yy0.tv.cmvideo.cn:8443/migutv/res/2019/09/30/59IHTLCINHHH.jpg",
+              "https://yy1.tv.cmvideo.cn:8443/migutv-clt/pomsimage/1504/026/730/202003240715_CCTVNEWS_1500000_20200324_35370063_0_327_HSJ1080H.jpg"
+            ],
+            onTap: (value) {
+              print(value);
+            },
+          )
+        ],
       ),
     );
   }
