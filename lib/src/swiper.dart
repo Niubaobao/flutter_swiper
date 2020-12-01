@@ -6,8 +6,13 @@ class Swiper extends StatefulWidget {
   final List<String> images;
   final double height;
   final double width;
-  final ValueChanged<int> onTap;
-  final Curve curve;
+  final ValueChanged<int> onTap; //点击回调
+  final Curve curve; // 切换动画
+  final bool loop; //是否循环播放
+  final bool showIndicator; // 是否显示指示器
+  final Color activeColor; //指示器激活的颜色  默认红色
+  final Color defaultColor; // 指示器默认的颜色 默认白色
+  final Axis scrollDirection; //轮播图滚动方向 默认水平
 
   Swiper(
     this.images, {
@@ -15,6 +20,11 @@ class Swiper extends StatefulWidget {
     this.width,
     this.onTap,
     this.curve = Curves.linear,
+    this.loop = true,
+    this.activeColor = Colors.red,
+    this.defaultColor = Colors.white,
+    this.showIndicator = true,
+    this.scrollDirection = Axis.horizontal,
   }) : assert(images != null);
   @override
   _SwiperState createState() => _SwiperState();
@@ -37,7 +47,9 @@ class _SwiperState extends State<Swiper> {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      alignment: Alignment.bottomCenter,
+      alignment: widget.scrollDirection == Axis.horizontal
+          ? Alignment.bottomCenter
+          : Alignment.centerRight,
       children: [
         _buildPageView(),
         _buildIndicator(),
@@ -49,7 +61,9 @@ class _SwiperState extends State<Swiper> {
     var length = widget.images.length;
     return Container(
       height: widget.height,
+      width: widget.width ?? double.infinity,
       child: PageView.builder(
+        scrollDirection: widget.scrollDirection,
         controller: _pageController,
         onPageChanged: (index) {
           setState(() {
@@ -77,34 +91,62 @@ class _SwiperState extends State<Swiper> {
   }
 
   Widget _buildIndicator() {
+    if (!widget.showIndicator) return SizedBox.shrink();
     var length = widget.images.length;
     return Positioned(
-      bottom: 10,
-      child: Row(
-        children: widget.images.map(
-          (e) {
-            return GestureDetector(
-              onTap: () {
-                var index = widget.images.indexOf(e);
-                _currentIndex = index;
-                goToIndex();
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 3),
-                child: ClipOval(
-                  child: Container(
-                    width: 8,
-                    height: 8,
-                    color: e == widget.images[_currentIndex % length]
-                        ? Colors.red
-                        : Colors.white,
-                  ),
-                ),
-              ),
-            );
-          },
-        ).toList(),
-      ),
+      bottom: widget.scrollDirection == Axis.horizontal ? 10 : null,
+      right: widget.scrollDirection == Axis.vertical ? 10 : null,
+      child: widget.scrollDirection == Axis.horizontal
+          ? Row(
+              children: widget.images.map(
+                (e) {
+                  return GestureDetector(
+                    onTap: () {
+                      var index = widget.images.indexOf(e);
+                      _currentIndex = index;
+                      goToIndex();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 3),
+                      child: ClipOval(
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          color: e == widget.images[_currentIndex % length]
+                              ? widget.activeColor
+                              : widget.defaultColor,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ).toList(),
+            )
+          : Column(
+              children: widget.images.map(
+                (e) {
+                  return GestureDetector(
+                    onTap: () {
+                      var index = widget.images.indexOf(e);
+                      _currentIndex = index;
+                      goToIndex();
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 3),
+                      child: ClipOval(
+                        child: Container(
+                          width: 8,
+                          height: 8,
+                          color: e == widget.images[_currentIndex % length]
+                              ? widget.activeColor
+                              : widget.defaultColor,
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ).toList(),
+            ),
     );
   }
 
@@ -120,6 +162,10 @@ class _SwiperState extends State<Swiper> {
       _timer = Timer.periodic(
         Duration(seconds: 3),
         (t) {
+          var length = widget.images.length;
+          if (widget.loop != true && (_currentIndex % length == length - 1)) {
+            return _timer = null;
+          }
           _currentIndex++;
           goToIndex();
         },

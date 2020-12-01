@@ -43,6 +43,8 @@ class _MyHomePageState extends State<MyHomePage> {
             onTap: (value) {
               print(value);
             },
+            loop: true,
+            // width: 100,
           )
         ],
       ),
