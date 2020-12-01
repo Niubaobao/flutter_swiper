@@ -14,6 +14,7 @@ class Swiper extends StatefulWidget {
   final Color activeColor; //指示器激活的颜色  默认红色
   final Color defaultColor; // 指示器默认的颜色 默认白色
   final Axis scrollDirection; //轮播图滚动方向 默认水平
+  final BoxFit imgFit; //图片展示样式
 
   Swiper(
     this.images, {
@@ -27,6 +28,7 @@ class Swiper extends StatefulWidget {
     this.showIndicator = true,
     this.autoplay = true,
     this.scrollDirection = Axis.horizontal,
+    this.imgFit = BoxFit.cover,
   }) : assert(images != null);
   @override
   _SwiperState createState() => _SwiperState();
@@ -78,13 +80,10 @@ class _SwiperState extends State<Swiper> {
             onPanDown: (details) {
               _cancelTimer();
             },
-            onTap: () {
-              widget.onTap(index % length);
-              print('_buildPageView');
-            },
+            onTap: () => widget.onTap(index % length),
             child: Image(
               image: NetworkImage(widget.images[index % length]),
-              fit: BoxFit.cover,
+              fit: widget.imgFit,
             ),
           );
         },
