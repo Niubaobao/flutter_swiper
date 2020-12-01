@@ -10,11 +10,12 @@ class Swiper extends StatefulWidget {
   final Curve curve; // 切换动画
   final bool loop; //是否循环播放
   final bool showIndicator; // 是否显示指示器
-  final bool autoplay;
+  final bool autoplay; // 是否自动轮播
   final Color activeColor; //指示器激活的颜色  默认红色
   final Color defaultColor; // 指示器默认的颜色 默认白色
   final Axis scrollDirection; //轮播图滚动方向 默认水平
   final BoxFit imgFit; //图片展示样式
+  final Size indicatorSize; //指示器的大小
 
   Swiper(
     this.images, {
@@ -23,12 +24,13 @@ class Swiper extends StatefulWidget {
     this.onTap,
     this.curve = Curves.linear,
     this.loop = true,
-    this.activeColor = Colors.red,
+    this.activeColor = Colors.blue,
     this.defaultColor = Colors.white,
     this.showIndicator = true,
     this.autoplay = true,
     this.scrollDirection = Axis.horizontal,
     this.imgFit = BoxFit.cover,
+    this.indicatorSize = const Size(8, 8),
   }) : assert(images != null);
   @override
   _SwiperState createState() => _SwiperState();
@@ -111,8 +113,8 @@ class _SwiperState extends State<Swiper> {
                       padding: const EdgeInsets.symmetric(horizontal: 3),
                       child: ClipOval(
                         child: Container(
-                          width: 8,
-                          height: 8,
+                          width: widget.indicatorSize.width,
+                          height: widget.indicatorSize.height,
                           color: e == widget.images[_currentIndex % length]
                               ? widget.activeColor
                               : widget.defaultColor,
@@ -136,8 +138,8 @@ class _SwiperState extends State<Swiper> {
                       padding: const EdgeInsets.symmetric(vertical: 3),
                       child: ClipOval(
                         child: Container(
-                          width: 8,
-                          height: 8,
+                          width: widget.indicatorSize.width,
+                          height: widget.indicatorSize.height,
                           color: e == widget.images[_currentIndex % length]
                               ? widget.activeColor
                               : widget.defaultColor,

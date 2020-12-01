@@ -45,6 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
             },
             loop: true,
             autoplay: true,
+            indicatorSize: Size(20, 20),
             // width: 100,
           )
         ],
