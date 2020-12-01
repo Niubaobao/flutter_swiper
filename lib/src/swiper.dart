@@ -10,6 +10,7 @@ class Swiper extends StatefulWidget {
   final Curve curve; // 切换动画
   final bool loop; //是否循环播放
   final bool showIndicator; // 是否显示指示器
+  final bool autoplay;
   final Color activeColor; //指示器激活的颜色  默认红色
   final Color defaultColor; // 指示器默认的颜色 默认白色
   final Axis scrollDirection; //轮播图滚动方向 默认水平
@@ -24,6 +25,7 @@ class Swiper extends StatefulWidget {
     this.activeColor = Colors.red,
     this.defaultColor = Colors.white,
     this.showIndicator = true,
+    this.autoplay = true,
     this.scrollDirection = Axis.horizontal,
   }) : assert(images != null);
   @override
@@ -159,6 +161,7 @@ class _SwiperState extends State<Swiper> {
   // 设置轮播定时器
   _initTimer() {
     if (_timer == null) {
+      if (widget.autoplay != true) return;
       _timer = Timer.periodic(
         Duration(seconds: 3),
         (t) {
