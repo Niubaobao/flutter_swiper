@@ -43,11 +43,13 @@ class _MyHomePageState extends State<MyHomePage> {
             onTap: (value) {
               print(value);
             },
+            scrollDirection: Axis.vertical,
             loop: true,
             autoplay: true,
-            indicatorSize: Size(20, 20),
-            // width: 100,
-          )
+            activeColor: Colors.yellow,
+            indicatorSize: Size(10, 10),
+            borderRadius: BorderRadius.circular(20),
+          ),
         ],
       ),
     );

@@ -16,6 +16,7 @@ class Swiper extends StatefulWidget {
   final Axis scrollDirection; //轮播图滚动方向 默认水平
   final BoxFit imgFit; //图片展示样式
   final Size indicatorSize; //指示器的大小
+  final BorderRadius borderRadius; //图片圆角大小
 
   Swiper(
     this.images, {
@@ -31,7 +32,9 @@ class Swiper extends StatefulWidget {
     this.scrollDirection = Axis.horizontal,
     this.imgFit = BoxFit.cover,
     this.indicatorSize = const Size(8, 8),
+    this.borderRadius,
   }) : assert(images != null);
+
   @override
   _SwiperState createState() => _SwiperState();
 }
@@ -67,7 +70,7 @@ class _SwiperState extends State<Swiper> {
     var length = widget.images.length;
     return Container(
       height: widget.height,
-      width: widget.width ?? double.infinity,
+      width: widget.width,
       child: PageView.builder(
         scrollDirection: widget.scrollDirection,
         controller: _pageController,
@@ -83,9 +86,12 @@ class _SwiperState extends State<Swiper> {
               _cancelTimer();
             },
             onTap: () => widget.onTap(index % length),
-            child: Image(
-              image: NetworkImage(widget.images[index % length]),
-              fit: widget.imgFit,
+            child: ClipRRect(
+              borderRadius: widget.borderRadius ?? BorderRadius.circular(0),
+              child: Image(
+                image: NetworkImage(widget.images[index % length]),
+                fit: widget.imgFit,
+              ),
             ),
           );
         },
@@ -96,6 +102,9 @@ class _SwiperState extends State<Swiper> {
   Widget _buildIndicator() {
     if (!widget.showIndicator) return SizedBox.shrink();
     var length = widget.images.length;
+    var _width = widget.indicatorSize.width;
+    var _height = widget.indicatorSize.height;
+
     return Positioned(
       bottom: widget.scrollDirection == Axis.horizontal ? 10 : null,
       right: widget.scrollDirection == Axis.vertical ? 10 : null,
@@ -104,17 +113,13 @@ class _SwiperState extends State<Swiper> {
               children: widget.images.map(
                 (e) {
                   return GestureDetector(
-                    onTap: () {
-                      var index = widget.images.indexOf(e);
-                      _currentIndex = index;
-                      goToIndex();
-                    },
+                    onTap: () => _ontap(e),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 3),
                       child: ClipOval(
                         child: Container(
-                          width: widget.indicatorSize.width,
-                          height: widget.indicatorSize.height,
+                          width: _width,
+                          height: _height,
                           color: e == widget.images[_currentIndex % length]
                               ? widget.activeColor
                               : widget.defaultColor,
@@ -129,17 +134,13 @@ class _SwiperState extends State<Swiper> {
               children: widget.images.map(
                 (e) {
                   return GestureDetector(
-                    onTap: () {
-                      var index = widget.images.indexOf(e);
-                      _currentIndex = index;
-                      goToIndex();
-                    },
+                    onTap: () => _ontap(e),
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 3),
                       child: ClipOval(
                         child: Container(
-                          width: widget.indicatorSize.width,
-                          height: widget.indicatorSize.height,
+                          width: _width,
+                          height: _height,
                           color: e == widget.images[_currentIndex % length]
                               ? widget.activeColor
                               : widget.defaultColor,
@@ -157,6 +158,13 @@ class _SwiperState extends State<Swiper> {
     Timer(Duration(milliseconds: 300), () {
       _pageController.jumpToPage(_currentIndex);
     });
+  }
+
+  // 点击图片回调
+  _ontap(e) {
+    var index = widget.images.indexOf(e);
+    _currentIndex = index;
+    goToIndex();
   }
 
   // 设置轮播定时器
@@ -177,6 +185,7 @@ class _SwiperState extends State<Swiper> {
     }
   }
 
+  // 滚动到指定页面
   void goToIndex() {
     _pageController.animateToPage(
       _currentIndex,
