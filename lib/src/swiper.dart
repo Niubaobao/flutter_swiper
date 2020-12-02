@@ -6,34 +6,67 @@ class Swiper extends StatefulWidget {
   final List<String> images;
   final double height;
   final double width;
-  final ValueChanged<int> onTap; //点击回调
-  final Curve curve; // 切换动画
-  final bool loop; //是否循环播放
-  final bool showIndicator; // 是否显示指示器
-  final bool autoplay; // 是否自动轮播
-  final Color activeColor; //指示器激活的颜色  默认红色
-  final Color defaultColor; // 指示器默认的颜色 默认白色
-  final Axis scrollDirection; //轮播图滚动方向 默认水平
-  final BoxFit imgFit; //图片展示样式
-  final Size indicatorSize; //指示器的大小
-  final BorderRadius borderRadius; //图片圆角大小
 
-  Swiper(
-    this.images, {
-    this.height = 200,
-    this.width,
-    this.onTap,
-    this.curve = Curves.linear,
-    this.loop = true,
-    this.activeColor = Colors.blue,
-    this.defaultColor = Colors.white,
-    this.showIndicator = true,
-    this.autoplay = true,
-    this.scrollDirection = Axis.horizontal,
-    this.imgFit = BoxFit.cover,
-    this.indicatorSize = const Size(8, 8),
-    this.borderRadius,
-  }) : assert(images != null);
+  ///点击回调
+  final ValueChanged<int> onTap;
+
+  /// 切换动画
+  final Curve curve;
+
+  ///是否循环播放
+  final bool loop;
+
+  /// 是否显示指示器
+  final bool showIndicator;
+
+  /// 是否自动轮播
+  final bool autoplay;
+
+  ///指示器激活的颜色  默认蓝色
+  final Color activeColor;
+
+  /// 指示器默认的颜色 默认白色
+  final Color defaultColor;
+
+  ///轮播图滚动方向 默认水平
+  final Axis scrollDirection;
+
+  ///图片展示样式
+  final BoxFit imgFit;
+
+  ///指示器的大小
+  final Size indicatorSize;
+
+  ///图片圆角大小
+  final BorderRadius borderRadius;
+  // final Widget Function(bool active) indicatorBuilder;
+
+  ///自定义单个指示器
+  final IndexedWidgetBuilder indicatorBuilder;
+
+  /// 图片padding
+  ///
+  final EdgeInsetsGeometry imagePadding;
+
+  Swiper(this.images,
+      {this.height = 200,
+      this.width,
+      this.onTap,
+      this.curve = Curves.linear,
+      this.loop = true,
+      this.activeColor = Colors.blue,
+      this.defaultColor = Colors.white,
+      this.showIndicator = true,
+      this.autoplay = true,
+      this.scrollDirection = Axis.horizontal,
+      this.imgFit = BoxFit.cover,
+      this.indicatorSize = const Size(8, 8),
+      this.borderRadius,
+      this.indicatorBuilder,
+      this.imagePadding
+      // this.indicatorBuilder = (active) => active ? Placeholder() : 'xx',
+      })
+      : assert(images != null);
 
   @override
   _SwiperState createState() => _SwiperState();
@@ -51,6 +84,8 @@ class _SwiperState extends State<Swiper> {
       initialPage: _currentIndex,
     );
     _initTimer();
+    // print(widget.imagePadding.vertical);
+    // print(widget.imagePadding.collapsedSize.height);
   }
 
   @override
@@ -86,11 +121,14 @@ class _SwiperState extends State<Swiper> {
               _cancelTimer();
             },
             onTap: () => widget.onTap(index % length),
-            child: ClipRRect(
-              borderRadius: widget.borderRadius ?? BorderRadius.circular(0),
-              child: Image(
-                image: NetworkImage(widget.images[index % length]),
-                fit: widget.imgFit,
+            child: Container(
+              padding: widget.imagePadding ?? EdgeInsets.all(0),
+              child: ClipRRect(
+                borderRadius: widget.borderRadius ?? BorderRadius.circular(0),
+                child: Image(
+                  image: NetworkImage(widget.images[index % length]),
+                  fit: widget.imgFit,
+                ),
               ),
             ),
           );
@@ -101,32 +139,41 @@ class _SwiperState extends State<Swiper> {
 
   Widget _buildIndicator() {
     if (!widget.showIndicator) return SizedBox.shrink();
+
+    if (widget.indicatorBuilder != null) {
+      return widget.indicatorBuilder(
+          context, _currentIndex % widget.images.length);
+    }
+
+    return _buildDefaultIndicator();
+  }
+
+  Widget _buildDefaultIndicator() {
     var length = widget.images.length;
     var _width = widget.indicatorSize.width;
     var _height = widget.indicatorSize.height;
 
     return Positioned(
-      bottom: widget.scrollDirection == Axis.horizontal ? 10 : null,
-      right: widget.scrollDirection == Axis.vertical ? 10 : null,
+      bottom: widget.scrollDirection == Axis?.horizontal ? 10 : null,
+      right: widget.scrollDirection == Axis?.vertical ? 10 : null,
       child: widget.scrollDirection == Axis.horizontal
           ? Row(
               children: widget.images.map(
                 (e) {
                   return GestureDetector(
-                    onTap: () => _ontap(e),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 3),
-                      child: ClipOval(
-                        child: Container(
-                          width: _width,
-                          height: _height,
-                          color: e == widget.images[_currentIndex % length]
-                              ? widget.activeColor
-                              : widget.defaultColor,
+                      onTap: () => _ontap(e),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 3),
+                        child: ClipOval(
+                          child: Container(
+                            width: _width,
+                            height: _height,
+                            color: e == widget.images[_currentIndex % length]
+                                ? widget.activeColor
+                                : widget.defaultColor,
+                          ),
                         ),
-                      ),
-                    ),
-                  );
+                      ));
                 },
               ).toList(),
             )

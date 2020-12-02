@@ -26,6 +26,16 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  List<String> _listes = [
+    "https://yy0.tv.cmvideo.cn:8443/migutv/res/2019/10/17/59L11DV8GKF0.jpg",
+    "https://yy0.tv.cmvideo.cn:8443/migutv/res/2019/09/30/59IHTLCINHHH.jpg",
+    "https://yy1.tv.cmvideo.cn:8443/migutv-clt/pomsimage/1504/026/730/202003240715_CCTVNEWS_1500000_20200324_35370063_0_327_HSJ1080H.jpg"
+  ];
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,20 +45,66 @@ class _MyHomePageState extends State<MyHomePage> {
       body: Column(
         children: [
           Swiper(
-            [
-              "https://yy0.tv.cmvideo.cn:8443/migutv/res/2019/10/17/59L11DV8GKF0.jpg",
-              "https://yy0.tv.cmvideo.cn:8443/migutv/res/2019/09/30/59IHTLCINHHH.jpg",
-              "https://yy1.tv.cmvideo.cn:8443/migutv-clt/pomsimage/1504/026/730/202003240715_CCTVNEWS_1500000_20200324_35370063_0_327_HSJ1080H.jpg"
-            ],
+            _listes,
             onTap: (value) {
               print(value);
             },
-            scrollDirection: Axis.vertical,
+            imagePadding: EdgeInsets.all(20),
+            // indicatorBuilder: (context, index) {
+            //   return Container(
+            //     width: 100,
+            //     height: 30,
+            //     alignment: Alignment.center,
+            //     color: Colors.white,
+            //     child: Text(
+            //       '$index/3',
+            //       style: TextStyle(
+            //         color: Colors.red,
+            //         fontWeight: FontWeight.w700,
+            //         fontSize: 20,
+            //       ),
+            //     ),
+            //   );
+            // },
+            scrollDirection: Axis.horizontal,
+            defaultColor: Colors.red,
             loop: true,
             autoplay: true,
             activeColor: Colors.yellow,
             indicatorSize: Size(10, 10),
             borderRadius: BorderRadius.circular(20),
+          ),
+          Swiper(
+            _listes,
+            onTap: (value) {
+              print(value);
+            },
+            indicatorBuilder: (context, index) {
+              return Container(
+                width: 100,
+                height: 30,
+                alignment: Alignment.center,
+                color: Colors.white,
+                child: Text(
+                  '$index/3',
+                  style: TextStyle(
+                    color: Colors.red,
+                    fontWeight: FontWeight.w700,
+                    fontSize: 20,
+                  ),
+                ),
+              );
+            },
+          ),
+          Swiper(
+            _listes,
+            borderRadius: BorderRadius.circular(10),
+            onTap: (value) {
+              print(value);
+            },
+            scrollDirection: Axis.vertical,
+            imagePadding: EdgeInsets.all(10),
+            defaultColor: Colors.red,
           ),
         ],
       ),
