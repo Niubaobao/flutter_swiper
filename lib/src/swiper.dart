@@ -48,25 +48,26 @@ class Swiper extends StatefulWidget {
   ///
   final EdgeInsetsGeometry imagePadding;
 
-  Swiper(this.images,
-      {this.height = 200,
-      this.width,
-      this.onTap,
-      this.curve = Curves.linear,
-      this.loop = true,
-      this.activeColor = Colors.blue,
-      this.defaultColor = Colors.white,
-      this.showIndicator = true,
-      this.autoplay = true,
-      this.scrollDirection = Axis.horizontal,
-      this.imgFit = BoxFit.cover,
-      this.indicatorSize = const Size(8, 8),
-      this.borderRadius,
-      this.indicatorBuilder,
-      this.imagePadding
-      // this.indicatorBuilder = (active) => active ? Placeholder() : 'xx',
-      })
-      : assert(images != null);
+  Swiper(
+    this.images, {
+    this.height = 200,
+    this.width,
+    this.onTap,
+    this.curve = Curves.linear,
+    this.loop = true,
+    this.activeColor = Colors.blue,
+    this.defaultColor = Colors.white,
+    this.showIndicator = true,
+    this.autoplay = true,
+    this.scrollDirection = Axis.horizontal,
+    this.imgFit = BoxFit.cover,
+    this.indicatorSize = const Size(8, 8),
+    this.borderRadius,
+    this.indicatorBuilder,
+    this.imagePadding,
+
+    // this.indicatorBuilder = (active) => active ? Placeholder() : 'xx',
+  }) : assert(images != null);
 
   @override
   _SwiperState createState() => _SwiperState();
@@ -84,8 +85,6 @@ class _SwiperState extends State<Swiper> {
       initialPage: _currentIndex,
     );
     _initTimer();
-    // print(widget.imagePadding.vertical);
-    // print(widget.imagePadding.collapsedSize.height);
   }
 
   @override
@@ -142,7 +141,9 @@ class _SwiperState extends State<Swiper> {
 
     if (widget.indicatorBuilder != null) {
       return widget.indicatorBuilder(
-          context, _currentIndex % widget.images.length);
+        context,
+        _currentIndex % widget.images.length,
+      );
     }
 
     return _buildDefaultIndicator();
@@ -157,13 +158,36 @@ class _SwiperState extends State<Swiper> {
       bottom: widget.scrollDirection == Axis?.horizontal ? 10 : null,
       right: widget.scrollDirection == Axis?.vertical ? 10 : null,
       child: widget.scrollDirection == Axis.horizontal
-          ? Row(
-              children: widget.images.map(
-                (e) {
-                  return GestureDetector(
+          ? Container(
+              child: Row(
+                children: widget.images.map(
+                  (e) {
+                    return GestureDetector(
+                        onTap: () => _ontap(e),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 3),
+                          child: ClipOval(
+                            child: Container(
+                              width: _width,
+                              height: _height,
+                              color: e == widget.images[_currentIndex % length]
+                                  ? widget.activeColor
+                                  : widget.defaultColor,
+                            ),
+                          ),
+                        ));
+                  },
+                ).toList(),
+              ),
+            )
+          : Container(
+              child: Column(
+                children: widget.images.map(
+                  (e) {
+                    return GestureDetector(
                       onTap: () => _ontap(e),
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 3),
+                        padding: const EdgeInsets.symmetric(vertical: 3),
                         child: ClipOval(
                           child: Container(
                             width: _width,
@@ -173,30 +197,11 @@ class _SwiperState extends State<Swiper> {
                                 : widget.defaultColor,
                           ),
                         ),
-                      ));
-                },
-              ).toList(),
-            )
-          : Column(
-              children: widget.images.map(
-                (e) {
-                  return GestureDetector(
-                    onTap: () => _ontap(e),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 3),
-                      child: ClipOval(
-                        child: Container(
-                          width: _width,
-                          height: _height,
-                          color: e == widget.images[_currentIndex % length]
-                              ? widget.activeColor
-                              : widget.defaultColor,
-                        ),
                       ),
-                    ),
-                  );
-                },
-              ).toList(),
+                    );
+                  },
+                ).toList(),
+              ),
             ),
     );
   }

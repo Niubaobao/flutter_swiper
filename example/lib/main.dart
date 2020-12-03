@@ -86,7 +86,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 alignment: Alignment.center,
                 color: Colors.white,
                 child: Text(
-                  '$index/3',
+                  '${index + 1}/3',
                   style: TextStyle(
                     color: Colors.red,
                     fontWeight: FontWeight.w700,
