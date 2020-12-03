@@ -5,6 +5,7 @@ flutter 轮播图组件
 ![竖向滚动](https://media.giphy.com/media/vVgiJE5lhgeMpbLInK/giphy.gif)
 
 ![横向滚动](https://media.giphy.com/media/TQycRd0r0r1WW1QKwE/giphy.gif)
+![demo](https://p1-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/88c08745ff524eebbd6dafc35247a66e~tplv-k3u1fbpfcp-watermark.image)
 
 ## 使用
 
@@ -26,6 +27,7 @@ dependencies:
 ## demo
 
 ```
+// 自定指示器
   List<String> _listes = [
     "https://yy0.tv.cmvideo.cn:8443/migutv/res/2019/10/17/59L11DV8GKF0.jpg",
     "https://yy0.tv.cmvideo.cn:8443/migutv/res/2019/09/30/59IHTLCINHHH.jpg",
@@ -33,25 +35,25 @@ dependencies:
   ];
 
 Swiper(
-            _listes,
-            onTap: (value) {
-              print(value);
-            },
-            indicatorBuilder: (context, index) {
-              return Container(
-                width: 100,
-                height: 30,
-                alignment: Alignment.center,
-                color: Colors.white,
-                child: Text(
-                  '${index + 1}/3',
-                  style: TextStyle(
-                    color: Colors.red,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 20,
-                  ),
-                ),
-              );
-            },
+    _listes,
+    onTap: (value) {
+      print(value);
+    },
+    indicatorBuilder: (context, index) {
+      return Container(
+        width: 100,
+        height: 30,
+        alignment: Alignment.center,
+        color: Colors.white,
+        child: Text(
+          '${index + 1}/3',
+          style: TextStyle(
+            color: Colors.red,
+            fontWeight: FontWeight.w700,
+            fontSize: 20,
           ),
+        ),
+      );
+    },
+  ),
 ```
