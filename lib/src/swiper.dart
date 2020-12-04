@@ -46,28 +46,32 @@ class Swiper extends StatefulWidget {
 
   /// 图片padding
   ///
-  final EdgeInsetsGeometry imagePadding;
+  final EdgeInsetsGeometry imagMargin;
 
-  Swiper(
-    this.images, {
-    this.height = 200,
-    this.width,
-    this.onTap,
-    this.curve = Curves.linear,
-    this.loop = true,
-    this.activeColor = Colors.blue,
-    this.defaultColor = Colors.white,
-    this.showIndicator = true,
-    this.autoplay = true,
-    this.scrollDirection = Axis.horizontal,
-    this.imgFit = BoxFit.cover,
-    this.indicatorSize = const Size(8, 8),
-    this.borderRadius,
-    this.indicatorBuilder,
-    this.imagePadding,
+  /// 每一项可以自定义样式
+  final Decoration itemdDecoration;
 
-    // this.indicatorBuilder = (active) => active ? Placeholder() : 'xx',
-  }) : assert(images != null);
+  Swiper(this.images,
+      {this.height = 200,
+      this.width,
+      this.onTap,
+      this.curve = Curves.linear,
+      this.loop = true,
+      this.activeColor = Colors.blue,
+      this.defaultColor = Colors.white,
+      this.showIndicator = true,
+      this.autoplay = true,
+      this.scrollDirection = Axis.horizontal,
+      this.imgFit = BoxFit.cover,
+      this.indicatorSize = const Size(8, 8),
+      this.borderRadius,
+      this.indicatorBuilder,
+      this.imagMargin,
+      this.itemdDecoration
+
+      // this.indicatorBuilder = (active) => active ? Placeholder() : 'xx',
+      })
+      : assert(images != null);
 
   @override
   _SwiperState createState() => _SwiperState();
@@ -121,12 +125,15 @@ class _SwiperState extends State<Swiper> {
             },
             onTap: () => widget.onTap(index % length),
             child: Container(
-              padding: widget.imagePadding ?? EdgeInsets.all(0),
+              margin: widget.imagMargin ?? EdgeInsets.all(0),
               child: ClipRRect(
                 borderRadius: widget.borderRadius ?? BorderRadius.circular(0),
-                child: Image(
-                  image: NetworkImage(widget.images[index % length]),
-                  fit: widget.imgFit,
+                child: Container(
+                  decoration: widget.itemdDecoration ?? BoxDecoration(),
+                  child: Image(
+                    image: NetworkImage(widget.images[index % length]),
+                    fit: widget.imgFit,
+                  ),
                 ),
               ),
             ),
@@ -230,7 +237,7 @@ class _SwiperState extends State<Swiper> {
           if (widget.loop != true && (_currentIndex % length == length - 1)) {
             return _timer = null;
           }
-          _currentIndex++;
+          _currentIndex = (_currentIndex + 1) % length;
           goToIndex();
         },
       );

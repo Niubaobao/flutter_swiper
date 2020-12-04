@@ -3,6 +3,11 @@ import 'package:xhb_swiper/xhb_swiper.dart';
 
 void main() => runApp(MyApp());
 
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) => ErrorWidget("flutter 自定义");
+}
+
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -49,7 +54,7 @@ class _MyHomePageState extends State<MyHomePage> {
             onTap: (value) {
               print(value);
             },
-            imagePadding: EdgeInsets.all(20),
+            imagMargin: EdgeInsets.all(20),
             // indicatorBuilder: (context, index) {
             //   return Container(
             //     width: 100,
@@ -103,7 +108,10 @@ class _MyHomePageState extends State<MyHomePage> {
               print(value);
             },
             scrollDirection: Axis.vertical,
-            imagePadding: EdgeInsets.all(10),
+            imagMargin: EdgeInsets.all(30),
+            itemdDecoration: BoxDecoration(
+              border: Border.all(color: Colors.yellow, width: 10),
+            ),
             defaultColor: Colors.red,
           ),
         ],
